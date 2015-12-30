@@ -40,13 +40,63 @@ namespace PacksizeTest
                     if (Result == DialogResult.Yes)
                     {
                         TXTprerequisite.Text = "None";
-                        courses.Add(TXTcouse.Text + ", " + TXTprerequisite.Text);
+                        AddCourse();
                     }
                     else
                     { return; }
                 }
                 else
-                { courses.Add(TXTcouse.Text + ", " + TXTprerequisite.Text); }
+                { AddCourse(); }
+            }
+        }
+
+        private void AddCourse()
+        {
+            if (courses.Count == 0) { courses.Add(TXTcouse.Text + ", " + TXTprerequisite.Text); }
+            else
+            {
+                int i = 0;
+                int j = 0;
+                for (i = 0; i < courses.Count; i++)
+                {
+                    int size;
+                    string str;
+                    string curso = "";
+                    size = courses[i].Length;
+                    str = courses[i];
+                    Char charRange = ',';
+                    int startIndex = str.IndexOf(charRange);
+                    int endIndex = str.LastIndexOf(charRange);
+                    string sub = str.Substring(0, endIndex);
+                    curso = sub;
+                    if (TXTcouse.Text == curso)
+                    {
+                        MessageBox.Show("This course already exist.", "Important Message");
+                        return;
+                    }
+                }
+                        for (j = 0; j < courses.Count; j++)
+                        {
+                            int size1;
+                            string str1;
+                            string pre = "";
+                            string compara = "";
+                            size1 = courses[j].Length - 1;
+                            str1 = courses[j];
+                            Char charRange1 = ',';
+                            int startIndex1 = str1.IndexOf(charRange1);
+                            int endIndex1 = str1.LastIndexOf(charRange1);
+                            string sub1 = str1.Substring(startIndex1 + 2);
+                            pre = sub1;
+                            sub1 = str1.Substring(0, endIndex1);
+                            compara = sub1;
+                            if ((TXTcouse.Text == pre) & (TXTprerequisite.Text == compara))
+                            {
+                                MessageBox.Show("You cant add this course because it will create an circular dependencie. ", "Important Message");
+                                return;
+                            }
+                }
+                courses.Add(TXTcouse.Text + ", " + TXTprerequisite.Text);
             }
         }
 
@@ -89,8 +139,7 @@ namespace PacksizeTest
                             courses[j] = cambio;
                     }
                 }
-            }
-                
+            }     
         }
 
         private void BTNshow_Click(object sender, EventArgs e)
