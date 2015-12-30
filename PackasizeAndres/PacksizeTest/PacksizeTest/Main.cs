@@ -13,6 +13,7 @@ namespace PacksizeTest
 {
     public partial class Main : Form
     {
+        //I use Lists to replace the Arrays because you can work with lists in a dynamic way. is better and it works similar than the Array.
         List<string> courses = new List<string> { };
         List<string> orden = new List<string> { };
         public Main()
@@ -20,6 +21,8 @@ namespace PacksizeTest
             InitializeComponent();
         }
 
+        //This event check if the course and the prerequisite is the same. It check if the Textbox are empty, and ask if you don't need a prerequisite for the course.
+        //Then invoque the AddCourse Function in order to add a new course.
         private void BTNadd_Click(object sender, EventArgs e)
         {
             if (TXTcouse.Text == TXTprerequisite.Text)
@@ -48,8 +51,9 @@ namespace PacksizeTest
                 else
                 { AddCourse(); }
             }
-        }
-
+        } 
+//This Function add a new course with the respective prerequisite in the list. It check if the course already exist and avoid to create circular dependencies.
+//Also it will add the new courses without prerequisite at the begining of the list.
         private void AddCourse()
         {
             if (courses.Count == 0) { courses.Add(TXTcouse.Text + ", " + TXTprerequisite.Text); }
@@ -57,6 +61,7 @@ namespace PacksizeTest
             {
                 int i = 0;
                 int j = 0;
+                int z = 0;
                 for (i = 0; i < courses.Count; i++)
                 {
                     int size;
@@ -96,10 +101,35 @@ namespace PacksizeTest
                                 return;
                             }
                 }
-                courses.Add(TXTcouse.Text + ", " + TXTprerequisite.Text);
+                if ((TXTprerequisite.Text == "None")&(courses.Count != 1))
+                {
+                    for (z = 0; z < courses.Count; z++)
+                    {
+                        int size1;
+                        string cambio;
+                        string str1;
+                        string pre = "";
+                        size1 = courses[z].Length - 1;
+                        str1 = courses[z];
+                        Char charRange1 = ',';
+                        int startIndex1 = str1.IndexOf(charRange1);
+                        int endIndex1 = str1.LastIndexOf(charRange1);
+                        string sub1 = str1.Substring(startIndex1 + 2);
+                        pre = sub1;
+                        if (pre != "None")
+                        {
+                            cambio = courses[z];
+                            courses[z] = TXTcouse.Text + ", " + TXTprerequisite.Text;
+                            courses.Add(cambio);
+                            return;
+                        }
+                    }
+                }
+                else
+                { courses.Add(TXTcouse.Text + ", " + TXTprerequisite.Text); }
             }
         }
-
+        //This Function order the courses in order acording to the prerequisite.
         private void Ordena()
         {
             int j = 0;
@@ -141,7 +171,7 @@ namespace PacksizeTest
                 }
             }     
         }
-
+        //This Function invoque the Ordena Funcion and then with a message box show the list of courses in order.
         private void BTNshow_Click(object sender, EventArgs e)
         {
             Ordena();
@@ -157,7 +187,7 @@ namespace PacksizeTest
                 int startIndex = str.IndexOf(charRange);
                 int endIndex = str.LastIndexOf(charRange);
                 string sub = str.Substring(0, endIndex);
-                cursos = cursos + ", " + sub;
+                cursos = cursos + sub + ", ";
             }
             MessageBox.Show(cursos, "Important Message");
         }
